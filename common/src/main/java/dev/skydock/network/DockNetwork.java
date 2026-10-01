@@ -166,7 +166,8 @@ public final class DockNetwork {
         Map<Item, Integer> available = AssemblyInventory.available(player.serverLevel(), dock.getBlockPos());
         AssemblyManager.Check space = AssemblyManager.validate(player.serverLevel(), dock, pattern, decorations);
         if (space.clear() && (dock.assemblyComplete() || dock.manualHull())) dock.clearHullMarker("Ready.");
-        boolean resources = cost.entrySet().stream().allMatch(entry -> available.getOrDefault(entry.getKey(), 0) >= entry.getValue());
+        boolean resources = player.isCreative()
+                || cost.entrySet().stream().allMatch(entry -> available.getOrDefault(entry.getKey(), 0) >= entry.getValue());
         CompoundTag root = new CompoundTag();
         root.putInt("Container", menu.containerId);
         root.putLong("Dock", dock.getBlockPos().asLong());
@@ -185,7 +186,8 @@ public final class DockNetwork {
         root.putInt("Progress", job != null ? job.placed : complete ? total : 0);
         root.putInt("Total", total);
         root.putString("Status", job != null || complete || manualHull ? dock.status() : !space.clear() ? space.message()
-                : !resources ? "The adjacent chest is missing required materials." : dock.status());
+                : !resources ? "The adjacent chest is missing required materials."
+                : player.isCreative() ? "Creative mode: materials are not required." : dock.status());
         root.putBoolean("AssemblySpaceClear", space.clear());
         root.putBoolean("SpaceClear", space.clear());
         root.putBoolean("CanAssemble", job == null && space.clear() && resources);

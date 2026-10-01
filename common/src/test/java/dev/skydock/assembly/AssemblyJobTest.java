@@ -62,4 +62,20 @@ class AssemblyJobTest {
         assertTrue(restored.spend(Blocks.IRON_BLOCK.asItem()));
         assertEquals(1022, restored.escrow.stream().mapToInt(ItemStack::getCount).sum());
     }
+
+    @Test void freeJobSpendsWithoutEscrowAndPersistsFlag() {
+        var state = Blocks.OAK_PLANKS.defaultBlockState();
+        List<ShipPattern.Block> cells = List.of(new ShipPattern.Block(BlockPos.ZERO, state, false));
+        AssemblyJob job = new AssemblyJob(net.minecraft.resources.ResourceLocation.parse("skydock:free"), false, cells, List.of(), true);
+        assertTrue(job.free);
+        assertTrue(job.spend(Blocks.OAK_PLANKS.asItem()));
+        assertTrue(job.escrow.isEmpty());
+        assertTrue(job.spent.isEmpty());
+
+        HolderLookup.Provider registries = HolderLookup.Provider.create(Stream.of(
+                BuiltInRegistries.BLOCK.asLookup(), BuiltInRegistries.ITEM.asLookup()));
+        AssemblyJob restored = AssemblyJob.load(job.save(registries), registries);
+        assertTrue(restored.free);
+        assertTrue(restored.spend(Blocks.OAK_PLANKS.asItem()));
+    }
 }

@@ -1,9 +1,62 @@
+# Gradle / Loom / Architectury
 .gradle/
 .architectury-transformer/
 **/build/
+bin/
+out/
+remappedSrc/
+**/remappedSrc/
+runs/
+**/runs/
 run/
 **/run/
+*.class
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+*.war
+*.ear
+hs_err_pid*
+replay_pid*
+
+# IDE / editors
 .idea/
 *.iml
+*.ipr
+*.iws
+.project
+.classpath
+.c9/
+.settings/
+.factorypath
+.vscode/
+*.code-workspace
+.cursor/
+*.swp
+*~
+*.sublime-*
+
+# OS
 .DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs / local runtime
 logs/
+**/logs/
+*.log
+
+# Python tooling (model-asset scripts)
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+.Python
+.venv/
+venv/
+.env
+.env.*
+
+# Local secrets / env
+*.pem
+credentials.json
+local.properties

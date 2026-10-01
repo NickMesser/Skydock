@@ -30,6 +30,7 @@ public final class DockBlockEntity extends BlockEntity implements MenuProvider {
     private int hullBlocks;
     public DockBlockEntity(BlockPos pos, BlockState state) { super(SkydockBlocks.DOCK_ENTITY.get(), pos, state); }
     public DockTier tier() { return ((DockControllerBlock) getBlockState().getBlock()).tier; }
+    public Direction facing() { return DockControllerBlock.facing(getBlockState()); }
     public void claim(Player player) {
         owner = player.getUUID(); team = player.getTeam() == null ? "" : player.getTeam().getName(); setChanged();
     }

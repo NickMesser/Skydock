@@ -108,7 +108,7 @@ public final class ShipInteractions {
                     Component.keybind("key.skydock.cruise"), Component.keybind("key.skydock.release"))); return true;
         }
         if (kind == DeviceBlock.Kind.CLAMP) {
-            Vec3 berth = Vec3.atLowerCornerOf(ship.tier.origin(ship.dock)).add(ship.center());
+            Vec3 berth = ship.tier.berthCenter(ship.dock, ship.dockFacing, ship.center());
             if (berth.distanceToSqr(new Vec3(ship.pose.x(), ship.pose.y(), ship.pose.z())) > 25) { ShipManager.tell(player, "Mooring clamps only hold within 5 blocks of the reserved berth."); return true; }
             ship.moored = !ship.moored; ship.velocity = Vec3.ZERO; ship.yawVelocity = 0; ship.cruise = false; ShipManager.tell(player, ship.moored ? "Mooring clamp secured." : "Mooring clamp released."); return true;
         }

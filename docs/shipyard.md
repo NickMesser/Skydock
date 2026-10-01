@@ -4,7 +4,7 @@ Skydock's NeoForge 1.21.1 build lets you create an airship from a dock controlle
 
 ## Start a custom ship
 
-1. Place a dock controller, then build within its south-facing outline. Keep the hull separate from terrain. Scaffolding may support construction because it is excluded from the ship.
+1. Place a dock controller, then build within its facing outline (the direction you look when placing). Keep the hull separate from terrain. Scaffolding may support construction because it is excluded from the ship.
 2. Connect every included block face-to-face to one helm. A ship needs exactly one helm.
 3. Add lift cells and engines. A lift cell contributes lift and structural capacity; a connected cluster can grow in any direction without breaking its visual form.
 4. Open the controller's **Manual** tab, choose **Inspect ship**, correct any reported issue, then choose **Launch ship**.
@@ -28,7 +28,7 @@ Use an engine to open its five-slot fuel and instruments screen. Sneaking does n
 
 Each dock offers three patterns appropriate to its tier: a cutter, twin-hull ship, and hauler. Across the four dock tiers, the shipyard offers twelve built-in patterns.
 
-Choose a pattern in the dock interface. Put its resources in one or more vanilla chests adjacent to the controller; touching double chests also work. The dock removes the full cost only when it can supply every requirement. The same full material cost applies in Creative mode.
+Choose a pattern in the dock interface. Put its resources in one or more vanilla chests adjacent to the controller; touching double chests also work. The dock removes the full cost only when it can supply every requirement. In Creative mode, **Build ship** does not consume materials.
 
 The decoration toggle controls the four cosmetic blocks: brass lantern, canvas awning, timber railing, and signal flag. When included, they add neither weight nor structural lift demand and they provide no lift. They still use a position in the dock's filled-block cap.
 
@@ -46,7 +46,7 @@ The mooring clamp can secure a ship only within five blocks of its reserved bert
 
 ## Docking
 
-To redock, return within four blocks of the destination berth center, align within ten degrees of the original north/south orientation, and slow below 1.6 blocks per second. Stand near the controller and select **Redock ship**. The berth must be clear and at least as large as the ship's current tier.
+To redock, return within four blocks of the destination berth center, align within ten degrees of the berth facing, and slow below 1.6 blocks per second. Stand near the controller and select **Redock ship**. The berth must be clear and at least as large as the ship's current tier.
 
 When a ship launches, the controller reserves the berth while the hull remains visible and usable. Redocking returns the real blocks and their inventories, allowing repair and expansion again.
 

@@ -26,6 +26,7 @@ public final class AssemblyJob {
     public final UUID id;
     public final ResourceLocation pattern;
     public final boolean decorations;
+    public final boolean free;
     public final List<Cell> cells;
     public final List<ItemStack> escrow;
     public final List<ItemStack> spent;
@@ -33,16 +34,21 @@ public final class AssemblyJob {
     public long lastStep;
 
     public AssemblyJob(ResourceLocation pattern, boolean decorations, List<ShipPattern.Block> blocks, List<ItemStack> escrow) {
-        this(UUID.randomUUID(), pattern, decorations,
+        this(pattern, decorations, blocks, escrow, false);
+    }
+
+    public AssemblyJob(ResourceLocation pattern, boolean decorations, List<ShipPattern.Block> blocks, List<ItemStack> escrow, boolean free) {
+        this(UUID.randomUUID(), pattern, decorations, free,
                 blocks.stream().map(cell -> new Cell(cell.pos(), cell.state(), cell.decoration())).toList(),
                 new ArrayList<>(escrow), new ArrayList<>(), 0, 0);
     }
 
-    private AssemblyJob(UUID id, ResourceLocation pattern, boolean decorations, List<Cell> cells,
+    private AssemblyJob(UUID id, ResourceLocation pattern, boolean decorations, boolean free, List<Cell> cells,
                         List<ItemStack> escrow, List<ItemStack> spent, int placed, long lastStep) {
         this.id = id;
         this.pattern = pattern;
         this.decorations = decorations;
+        this.free = free;
         this.cells = List.copyOf(cells);
         this.escrow = escrow;
         this.spent = spent;
@@ -54,6 +60,7 @@ public final class AssemblyJob {
     public boolean complete() { return placed >= cells.size(); }
 
     public boolean spend(Item item) {
+        if (free) return true;
         for (int i = 0; i < escrow.size(); i++) {
             ItemStack stack = escrow.get(i);
             if (!stack.is(item)) continue;
@@ -75,6 +82,7 @@ public final class AssemblyJob {
         tag.putUUID("Id", id);
         tag.putString("Pattern", pattern.toString());
         tag.putBoolean("Decorations", decorations);
+        tag.putBoolean("Free", free);
         tag.putInt("Placed", placed);
         tag.putLong("LastStep", lastStep);
         ListTag cellTags = new ListTag();
@@ -103,13 +111,16 @@ public final class AssemblyJob {
         }
         List<ItemStack> items = loadStacks(tag.getList("Escrow", Tag.TAG_COMPOUND), registries);
         List<ItemStack> spent = loadStacks(tag.getList("Spent", Tag.TAG_COMPOUND), registries);
-        return new AssemblyJob(id, pattern, tag.getBoolean("Decorations"), cells, items, spent,
+        return new AssemblyJob(id, pattern, tag.getBoolean("Decorations"), tag.getBoolean("Free"), cells, items, spent,
                 tag.getInt("Placed"), tag.getLong("LastStep"));
     }
 
     private static ListTag saveStacks(List<ItemStack> stacks, HolderLookup.Provider registries) {
         ListTag result = new ListTag();
-        for (ItemStack stack : stacks) result.add(stack.save(registries));
+        for (ItemStack stack : stacks) {
+            if (stack.isEmpty()) continue;
+            result.add(stack.save(registries));
+        }
         return result;
     }
 

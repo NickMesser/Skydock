@@ -19,6 +19,7 @@ public final class Ship {
     public DockTier tier;
     public ResourceKey<Level> dimension = Level.OVERWORLD;
     public BlockPos dock, yard;
+    public Direction dockFacing = Direction.SOUTH;
     public ShipPose pose, previousPose;
     public Vec3 velocity = Vec3.ZERO;
     public final ShipMotion history = new ShipMotion();
@@ -48,6 +49,9 @@ public final class Ship {
     public String phase = "active";
     public ResourceKey<Level> transferDimension;
     public BlockPos transferOrigin, transferDock;
+    public Direction transferFacing;
+    public DockTier transferBerthTier;
+    public BlockPos transferShift = BlockPos.ZERO;
     public final Map<UUID, BlockPos> seated = new HashMap<>();
 
     public Vec3 center() { return pivot == null ? legacyCenter() : pivot; }
@@ -162,6 +166,7 @@ public final class Ship {
         tag.putUUID("Id", id); if (owner != null) tag.putUUID("Owner", owner);
         tag.putString("Team", team); tag.putString("Tier", tier.name()); tag.putString("Dimension", dimension.location().toString());
         tag.putLong("Dock", dock.asLong()); tag.putLong("Yard", yard.asLong());
+        tag.putString("DockFacing", dockFacing.getSerializedName());
         tag.putDouble("X", pose.x()); tag.putDouble("Y", pose.y()); tag.putDouble("Z", pose.z()); tag.putDouble("Yaw", pose.yaw());
         Vec3 center = center(); tag.putDouble("PivotX", center.x); tag.putDouble("PivotZ", center.z);
         tag.putDouble("Vx", velocity.x); tag.putDouble("Vy", velocity.y); tag.putDouble("Vz", velocity.z);
@@ -172,6 +177,9 @@ public final class Ship {
         if (transferOrigin != null) {
             tag.putLong("TransferOrigin", transferOrigin.asLong()); tag.putLong("TransferDock", transferDock.asLong());
             tag.putString("TransferDimension", transferDimension.location().toString());
+            if (transferFacing != null) tag.putString("TransferFacing", transferFacing.getSerializedName());
+            if (transferBerthTier != null) tag.putString("TransferBerthTier", transferBerthTier.name());
+            if (transferShift != null && !transferShift.equals(BlockPos.ZERO)) tag.putLong("TransferShift", transferShift.asLong());
         }
         if (pilot != null) tag.putUUID("Pilot", pilot);
         if (pilot != null && pilotAnchor != null) {
@@ -204,6 +212,9 @@ public final class Ship {
         ship.team = tag.getString("Team"); ship.tier = DockTier.valueOf(tag.getString("Tier"));
         ship.dimension = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(tag.getString("Dimension")));
         ship.dock = BlockPos.of(tag.getLong("Dock")); ship.yard = BlockPos.of(tag.getLong("Yard"));
+        ship.dockFacing = tag.contains("DockFacing")
+                ? Direction.byName(tag.getString("DockFacing")) : Direction.SOUTH;
+        if (ship.dockFacing == null || !ship.dockFacing.getAxis().isHorizontal()) ship.dockFacing = Direction.SOUTH;
         ship.pose = new ShipPose(tag.getDouble("X"), tag.getDouble("Y"), tag.getDouble("Z"), tag.getDouble("Yaw")); ship.previousPose = ship.pose;
         if (tag.contains("PivotX", Tag.TAG_DOUBLE) && tag.contains("PivotZ", Tag.TAG_DOUBLE))
             ship.pivot = new Vec3(tag.getDouble("PivotX"), 0, tag.getDouble("PivotZ"));
@@ -216,6 +227,12 @@ public final class Ship {
         if (tag.contains("TransferOrigin")) {
             ship.transferOrigin = BlockPos.of(tag.getLong("TransferOrigin")); ship.transferDock = BlockPos.of(tag.getLong("TransferDock"));
             ship.transferDimension = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(tag.getString("TransferDimension")));
+            if (tag.contains("TransferFacing")) {
+                Direction facing = Direction.byName(tag.getString("TransferFacing"));
+                ship.transferFacing = facing != null && facing.getAxis().isHorizontal() ? facing : Direction.SOUTH;
+            }
+            if (tag.contains("TransferBerthTier")) ship.transferBerthTier = DockTier.valueOf(tag.getString("TransferBerthTier"));
+            ship.transferShift = tag.contains("TransferShift") ? BlockPos.of(tag.getLong("TransferShift")) : BlockPos.ZERO;
         }
         if (tag.hasUUID("Pilot")) ship.pilot = tag.getUUID("Pilot");
         if (tag.contains("AnchorX")) ship.pilotAnchor = new Vec3(tag.getDouble("AnchorX"), tag.getDouble("AnchorY"), tag.getDouble("AnchorZ"));

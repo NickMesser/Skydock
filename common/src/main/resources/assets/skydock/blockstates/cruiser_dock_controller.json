@@ -1,7 +1,19 @@
 {
   "variants": {
-    "": {
+    "facing=south": {
       "model": "skydock:block/cruiser_dock_controller"
+    },
+    "facing=west": {
+      "model": "skydock:block/cruiser_dock_controller",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "skydock:block/cruiser_dock_controller",
+      "y": 180
+    },
+    "facing=east": {
+      "model": "skydock:block/cruiser_dock_controller",
+      "y": 270
     }
   }
 }

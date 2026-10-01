@@ -18,7 +18,7 @@ The installable mod is `neoforge/build/libs/skydock-neoforge-0.1.0-alpha.1.jar`.
 
 ## Build your first airship
 
-1. Craft a Scout Dock Controller or take one from the Skydock creative tab. Place it just in front of the future hull. The outline extends **south (+Z)**, one block above the controller. Preview it while holding a controller.
+1. Craft a Scout Dock Controller or take one from the Skydock creative tab. Place it just in front of the future hull. The outline extends in the **controller’s facing direction** (the direction you look when placing), one block above the controller. Preview it while holding a controller.
 2. Build entirely inside the outline. Leave the hull separated from terrain; Minecraft scaffolding can support it and is excluded from assembly. Every counted block must connect face-to-face to exactly one helm.
 3. Add lift cells. Each supplies 1,000 kg of lift and supports 128 structural blocks. Ordinary blocks weigh 10 kg by default. Adjacent lift cells merge visually on all six faces, so 2 × 2 × 2 envelopes and larger clusters remain intact as you expand them.
 4. Add an engine and put furnace fuel in its five fuel slots. Engines progress from Brass Engine to Compound Engine, Turbine Engine, and Aether Drive; later tiers provide more thrust, better fuel efficiency, and a higher top speed.
@@ -27,7 +27,7 @@ The installable mod is `neoforge/build/libs/skydock-neoforge-0.1.0-alpha.1.jar`.
 7. Cruise holds horizontal speed and heading. **W/S** adjusts cruise speed at the helm, while **A/D** steers. Press **C** anywhere aboard to disengage and coast to a stop. Cruise disengages on collision, mooring, or fuel exhaustion; it does not plan routes or avoid obstacles. Use a crew seat to sit and **R** to stand. A mooring clamp can secure the ship within five blocks of its reserved berth.
 
    Crashes do damage. Hitting terrain or another ship faster than 3 blocks/second breaks hull blocks where the ship struck: faster and heavier ships break more, and harder blocks hold longer, so canvas lift cells give way before planks and planks before engines. Broken blocks drop their items, and container contents, where they were. The helm is never broken, docking speeds are always safe, and terrain is never damaged. A ship moving faster than 3 blocks/second also hurts creatures in its path; crew aboard it are safe. Turn it all off with `/gamerule skydockCollisionDamage false`.
-8. To redock, return within four blocks of the destination berth center, align yaw within ten degrees of the original north/south orientation, and slow below 1.6 blocks/second. Stand near the controller and choose **Redock ship**. The berth must be clear and the same tier or larger. The real blocks and current inventories return; repair and expansion are available again.
+8. To redock, return within four blocks of the destination berth center, align yaw within ten degrees of the berth facing, and slow below 1.6 blocks/second. Stand near the controller and choose **Redock ship**. The berth must be clear and the same tier or larger. The real blocks and current inventories return; repair and expansion are available again.
 
 | Tier | Interior | Filled-block cap |
 | --- | --- | ---: |
@@ -44,7 +44,7 @@ Controllers and ships are owned by the player who places/first claims the contro
 
 The Skydock creative tab contains 17 custom blocks: four dock controllers, a helm, lift cell, four engine tiers, ballast, a mooring clamp, a crew seat, and four decorative blocks. The decorative blocks can be included or excluded with the dock's decoration toggle. Included decorations are cosmetic: they add no mass, consume no structural-lift allowance, and do not add lift. They still count toward the dock tier's overall filled-block cap.
 
-Each dock tier offers three built-in construction patterns, for a catalog of twelve ships. Select a pattern and decoration option in the dock interface, then assemble it with the required resources in one or more vanilla chests touching the controller. Touching double chests are supported. The full material cost is always required, including in Creative mode.
+Each dock tier offers three built-in construction patterns, for a catalog of twelve ships. Select a pattern and decoration option in the dock interface, then assemble it with the required resources in one or more vanilla chests touching the controller. Touching double chests are supported. In Creative mode, **Build ship** skips the material cost.
 
 Normal use remains quick: use the helm, clamp, or seat normally to operate it. Sneak and use any of those devices to open its information screen; sneak and use a lift cell to inspect its connected cluster. Use an engine to open its five-slot fuel and instruments screen.
 

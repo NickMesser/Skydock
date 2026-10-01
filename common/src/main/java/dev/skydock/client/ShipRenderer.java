@@ -37,7 +37,8 @@ public final class ShipRenderer {
     }
     private static final Map<UUID, Mesh> meshes = new HashMap<>();
     private static final Map<UUID, CompletableFuture<Built>> building = new HashMap<>();
-    private static final Map<BlockPos, dev.skydock.data.DockTier> docks = new HashMap<>();
+    private record DockOutline(dev.skydock.data.DockTier tier, net.minecraft.core.Direction facing) {}
+    private static final Map<BlockPos, DockOutline> docks = new HashMap<>();
     private static boolean workerFailed;
 
     public static void clear() {
@@ -59,7 +60,7 @@ public final class ShipRenderer {
         for (int x = cx - 6; x <= cx + 6; x++) for (int z = cz - 6; z <= cz + 6; z++) {
             var chunk = mc.level.getChunkSource().getChunk(x, z, ChunkStatus.FULL, false);
             if (chunk != null) chunk.getBlockEntities().forEach((p, entity) -> {
-                if (entity instanceof DockBlockEntity dock) docks.put(p, dock.tier());
+                if (entity instanceof DockBlockEntity dock) docks.put(p, new DockOutline(dock.tier(), dock.facing()));
             });
         }
     }
@@ -187,10 +188,10 @@ public final class ShipRenderer {
         PoseStack outlines = new PoseStack(); outlines.translate(-eye.x, -eye.y, -eye.z);
         var buffers = mc.renderBuffers().bufferSource();
         var nearest = docks.entrySet().stream().min(Comparator.comparingDouble(e -> e.getKey().distToCenterSqr(mc.player.position()))).orElse(null);
-        if (nearest != null) LevelRenderer.renderLineBox(outlines, buffers.getBuffer(RenderType.lines()), nearest.getValue().envelope(nearest.getKey()), .35f, .9f, .76f, .8f);
+        if (nearest != null) LevelRenderer.renderLineBox(outlines, buffers.getBuffer(RenderType.lines()), nearest.getValue().tier().envelope(nearest.getKey(), nearest.getValue().facing()), .35f, .9f, .76f, .8f);
         if (mc.player.getMainHandItem().getItem() instanceof net.minecraft.world.item.BlockItem item && item.getBlock() instanceof DockControllerBlock dock
                 && mc.hitResult instanceof BlockHitResult hit && hit.getType() == HitResult.Type.BLOCK) {
-            LevelRenderer.renderLineBox(outlines, buffers.getBuffer(RenderType.lines()), dock.tier.envelope(hit.getBlockPos().relative(hit.getDirection())), .5f, .75f, 1, .8f);
+            LevelRenderer.renderLineBox(outlines, buffers.getBuffer(RenderType.lines()), dock.tier.envelope(hit.getBlockPos().relative(hit.getDirection()), mc.player.getDirection()), .5f, .75f, 1, .8f);
         }
         ShipInteractions.Hit hit = ShipInteractions.pick(mc.player);
         if (hit != null) {
